@@ -4,6 +4,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import Home from './screens/home/home';
 import Contact from './screens/contact/contact';
+import About from './screens/about/about';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -13,6 +14,7 @@ export default function App() {
     <NavigationContainer>
       <Drawer.Navigator>
         <Drawer.Screen name="Home" component={Home} />
+        <Drawer.Screen name="About" component={About} />
         <Drawer.Screen name="Contact" component={Contact} />
       </Drawer.Navigator>
     </NavigationContainer>

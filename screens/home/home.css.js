@@ -19,7 +19,7 @@ export const styles = StyleSheet.create({
   },
   slide: {
     height: 250,
-    paddingTop: 10,
+    paddingTop: 20,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
