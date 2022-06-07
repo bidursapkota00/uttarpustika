@@ -6,6 +6,7 @@ import {
   Image,
   Dimensions,
   ScrollView,
+  TouchableOpacity,
 } from 'react-native';
 import Listview from '../../components/listview/listview';
 import UniversityItem from './universityItem';
@@ -16,7 +17,7 @@ import {boards, slideImg} from '../../utils/data';
 export const SLIDER_WIDTH = Dimensions.get('window').width;
 export const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.8);
 
-const Home = () => {
+const Home = ({navigation}) => {
   const carousel = useRef(null);
   const [index, setIndex] = React.useState(0);
 
@@ -73,9 +74,18 @@ const Home = () => {
             {boards.map((b, i) => {
               return (
                 <View style={styles.list} key={b.title}>
-                  <UniversityItem index={i}>
-                    <Listview board={b} />
-                  </UniversityItem>
+                  <TouchableOpacity
+                    style={styles.button}
+                    onPress={() =>
+                      navigation.navigate('Board', {
+                        itemId: b.title,
+                        otherParam: 'anything you want here',
+                      })
+                    }>
+                    <UniversityItem index={i}>
+                      <Listview board={b} />
+                    </UniversityItem>
+                  </TouchableOpacity>
                 </View>
               );
             })}

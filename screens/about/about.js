@@ -24,11 +24,13 @@ export default function About() {
         </Text>
         <Text style={styles.credit}>Credit</Text>
         {[...new Array(6)].map((_, i) => (
-          <Text
-            style={styles.name}
-            onPress={() => Linking.openURL('http://google.com')}>
-            Aalu prasad pidalu
-          </Text>
+          <View style={styles.credits}>
+            <Text
+              style={styles.name}
+              onPress={() => Linking.openURL('http://google.com')}>
+              Aalu prasad pidalu -- co-founder
+            </Text>
+          </View>
         ))}
       </View>
     </ScrollView>

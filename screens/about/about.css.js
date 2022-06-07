@@ -14,6 +14,15 @@ export const styles = StyleSheet.create({
     width: '100%',
     height: 300,
   },
+  credits: {
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#505050',
+    marginBottom: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderLeftWidth: 5,
+  },
   description: {
     backgroundColor: '#FF8033',
     marginTop: -30,
@@ -33,11 +42,8 @@ export const styles = StyleSheet.create({
   name: {
     fontSize: 16,
     lineHeight: 18,
-    paddingLeft: 20,
-    paddingBottom: 5,
-    borderLeftWidth: 5,
-    borderLeftColor: '#4b81f4',
-    marginBottom: 20,
-    color: '#1557e3',
+    padding: 20,
+    color: '#303030',
+    textTransform: 'capitalize',
   },
 });
