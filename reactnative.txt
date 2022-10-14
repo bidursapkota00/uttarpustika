@@ -1,0 +1,21 @@
+echo $JAVA_HOME
+sudo -H gedit /etc/environment
+export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64/bin/
+sudo apt install openjdk-11-jre-headless
+java -version
+
+cd app
+keytool -genkeypair -v -storetype PKCS12 -keystore uttarpustika.keystore -alias uttarpustika -keyalg RSA -keysize 2048 -validity 10000
+
+cd /usr/local/android-studio/bin
+adb devices
+android avd
+
+cd android
+./gradlew clean
+./gradlew assembleRelease
+npx react-native start --reset-cache
+npx react-native run-android deviceId=c77af63d0605
+react-native run-android --varient=release
+react-native start --port=9001
+
