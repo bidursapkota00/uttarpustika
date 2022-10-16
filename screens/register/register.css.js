@@ -4,7 +4,6 @@ export const styles = StyleSheet.create({
   container: {
     padding: 25,
     paddingTop: 50,
-    flex: 1,
   },
   title: {
     textAlign: 'center',
