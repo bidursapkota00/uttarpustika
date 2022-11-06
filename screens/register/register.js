@@ -51,19 +51,32 @@ function Register() {
         setVisible('Use "-" to seperate citizenship number');
         return;
       }
-      console.log(name, address, email, number, password, citizenship);
-      const res = await postData(
-        'https://water-flow-meter.herokuapp.com/api/register',
-        {
-          name,
-          address,
-          email,
-          password,
-          number,
-          citizenship,
-        },
-      );
-      console.log(res);
+      try {
+        const res = await postData(
+          'https://water-flow-meter.herokuapp.com/api/register',
+          {
+            name,
+            address,
+            email,
+            password,
+            number,
+            citizenship,
+          },
+        );
+        setVisible(res.message);
+        if (res.status == 200) {
+          setName('');
+          setEmail('');
+          setAddress('');
+          setCitizenship('');
+          setPassword('');
+          setConfirmPassword('');
+          setNumber('');
+        }
+      } catch (error) {
+        console.log(error);
+        setVisible('Error Occured');
+      }
     } else {
       setVisible('Data is not Complete');
     }
