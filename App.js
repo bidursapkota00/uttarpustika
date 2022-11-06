@@ -10,6 +10,7 @@ import {
   DefaultTheme as PaperDefaultTheme,
 } from 'react-native-paper';
 import merge from 'deepmerge';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Home from './screens/home/home';
 import Register from './screens/register/register';
@@ -27,7 +28,31 @@ function StackBar() {
   );
 }
 
+const storeUser = async () => {
+  try {
+    await AsyncStorage.multiSet([
+      ['user', 'abcd'],
+      ['pass', 'password1'],
+    ]);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const getUser = async () => {
+  try {
+    const user = await AsyncStorage.multiGet(['user', 'pass']);
+    console.log(user);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export default function App() {
+  React.useEffect(() => {
+    // storeUser();
+    // getUser();
+  }, []);
   return (
     <PaperProvider theme={CombinedDefaultTheme}>
       <NavigationContainer>

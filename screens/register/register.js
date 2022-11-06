@@ -136,8 +136,10 @@ function Register() {
           <Button mode="contained" onPress={onSubmit}>
             Submit
           </Button>
+          <Text variant="labelSmall">Already have an account?</Text>
         </View>
       </ScrollView>
+
       <View style={styles.snackbar}>
         <Snackbar
           duration={3000}
