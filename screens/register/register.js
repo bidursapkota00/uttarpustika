@@ -1,12 +1,5 @@
 import React, {useState} from 'react';
-import {
-  Button,
-  Title,
-  TextInput,
-  Text,
-  Snackbar,
-  withTheme,
-} from 'react-native-paper';
+import {Button, TextInput, Text, Snackbar, withTheme} from 'react-native-paper';
 import {View, KeyboardAvoidingView, ScrollView} from 'react-native';
 import {styles} from './register.css';
 
@@ -21,7 +14,7 @@ async function postData(url = '', data = {}) {
   return response.json(); // parses JSON response into native JavaScript objects
 }
 
-function Register() {
+function Register({navigation}) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [address, setAddress] = useState('');
@@ -86,7 +79,6 @@ function Register() {
     <KeyboardAvoidingView>
       <ScrollView>
         <View style={styles.container}>
-          <Title style={styles.title}>Request for Water Service!</Title>
           <TextInput
             style={[styles.input]}
             label="Full Name"
@@ -134,9 +126,17 @@ function Register() {
             onChangeText={text => setCitizenship(text)}
           />
           <Button mode="contained" onPress={onSubmit}>
-            Submit
+            Register
           </Button>
-          <Text variant="labelSmall">Already have an account?</Text>
+          <View style={styles.already}>
+            <Text variant="labelMedium">Already have an account?</Text>
+            <Button
+              contentStyle={{justifyContent: 'flex-start', padding: 0}}
+              uppercase={false}
+              onPress={() => navigation.navigate('Login')}>
+              Login
+            </Button>
+          </View>
         </View>
       </ScrollView>
 

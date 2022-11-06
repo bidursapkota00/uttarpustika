@@ -10,71 +10,65 @@ import {
   DefaultTheme as PaperDefaultTheme,
 } from 'react-native-paper';
 import merge from 'deepmerge';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useLoginStore} from './utils/mobx/auth.store';
 
-import Home from './screens/home/home';
 import Register from './screens/register/register';
+import Loading from './screens/loading/loading';
+import Home from './screens/home/home';
+import Login from './screens/login/login';
+import {observer} from 'mobx-react-lite';
 
 const CombinedDefaultTheme = merge(PaperDefaultTheme, NavigationDefaultTheme);
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
-function StackBar() {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen name="Home" component={Home} />
-    </Stack.Navigator>
-  );
-}
+export default observer(() => {
+  const {isLoggedIn, loading, checkIfLoggedIn} = useLoginStore();
 
-const storeUser = async () => {
-  try {
-    await AsyncStorage.multiSet([
-      ['user', 'abcd'],
-      ['pass', 'password1'],
-    ]);
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-const getUser = async () => {
-  try {
-    const user = await AsyncStorage.multiGet(['user', 'pass']);
-    console.log(user);
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-export default function App() {
   React.useEffect(() => {
-    // storeUser();
-    // getUser();
+    checkIfLoggedIn();
   }, []);
+
+  function Screen() {
+    if (loading) {
+      return (
+        <Stack.Navigator>
+          <Stack.Screen
+            name="Loading"
+            component={Loading}
+            options={{headerShown: false}}
+          />
+        </Stack.Navigator>
+      );
+    }
+    if (!isLoggedIn) {
+      return (
+        <Stack.Navigator>
+          <Stack.Screen
+            name="Login"
+            component={Login}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="Register"
+            component={Register}
+            options={{headerShown: false}}
+          />
+        </Stack.Navigator>
+      );
+    } else {
+      return (
+        <Drawer.Navigator>
+          <Stack.Screen name="Home" component={Home} />
+        </Drawer.Navigator>
+      );
+    }
+  }
+
   return (
     <PaperProvider theme={CombinedDefaultTheme}>
-      <NavigationContainer>
-        <Drawer.Navigator>
-          <Drawer.Screen name="Register" component={Register} />
-          <Drawer.Screen
-            options={{
-              title: 'My home',
-              headerStyle: {
-                backgroundColor: '#f4511e',
-                height: 70,
-              },
-              headerTintColor: '#fff',
-              headerTitleStyle: {
-                fontWeight: 'bold',
-              },
-            }}
-            name="Main"
-            component={StackBar}
-          />
-        </Drawer.Navigator>
-      </NavigationContainer>
+      <NavigationContainer>{Screen()}</NavigationContainer>
     </PaperProvider>
   );
-}
+});

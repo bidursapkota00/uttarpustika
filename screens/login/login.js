@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Button, TextInput, Text, Snackbar, withTheme} from 'react-native-paper';
 import {View, KeyboardAvoidingView, ScrollView} from 'react-native';
-import {styles} from './register.css';
+import {styles} from './login.css';
 
 async function postData(url = '', data = {}) {
   const response = await fetch(url, {
@@ -14,7 +14,7 @@ async function postData(url = '', data = {}) {
   return response.json(); // parses JSON response into native JavaScript objects
 }
 
-function Login() {
+function Login({navigation}) {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
 
@@ -23,30 +23,31 @@ function Login() {
 
   const onSubmit = async () => {
     if (password && id) {
-      try {
-        const res = await postData(
-          'https://water-flow-meter.herokuapp.com/api/apk/login',
-          {
-            id,
-            password,
-          },
-        );
-        setVisible(res.message);
-        if (res.status == 200) {
-          setPassword('');
-          setId('');
-        }
-      } catch (error) {
-        console.log(error);
-        setVisible('Error Occured');
-      }
+      console.log(password, id);
+      // try {
+      //   const res = await postData(
+      //     'https://water-flow-meter.herokuapp.com/api/apk/login',
+      //     {
+      //       id,
+      //       password,
+      //     },
+      //   );
+      //   setVisible(res.message);
+      //   if (res.status == 200) {
+      //     setPassword('');
+      //     setId('');
+      //   }
+      // } catch (error) {
+      //   console.log(error);
+      //   setVisible('Error Occured');
+      // }
     } else {
       setVisible('Data is not Complete');
     }
   };
 
   return (
-    <KeyboardAvoidingView>
+    <KeyboardAvoidingView style={{flex: 1, paddingBottom: 50}}>
       <ScrollView>
         <View style={styles.container}>
           <TextInput
@@ -65,6 +66,15 @@ function Login() {
           <Button mode="contained" onPress={onSubmit}>
             Login!
           </Button>
+          <View style={styles.dont}>
+            <Text variant="labelSmall">Don't have an account?</Text>
+            <Button
+              contentStyle={{justifyContent: 'flex-start', padding: 0}}
+              uppercase={false}
+              onPress={() => navigation.navigate('Register')}>
+              Register
+            </Button>
+          </View>
         </View>
       </ScrollView>
       <View style={styles.snackbar}>

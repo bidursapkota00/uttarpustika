@@ -17,4 +17,5 @@ export const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
   },
+  already: {flexDirection: 'row', alignItems: 'center', marginTop: 15},
 });
