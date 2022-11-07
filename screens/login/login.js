@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {Button, TextInput, Text, Snackbar, withTheme} from 'react-native-paper';
 import {View, KeyboardAvoidingView, ScrollView} from 'react-native';
+import {useLoginStore} from '../../utils/mobx/auth.store';
 import {styles} from './login.css';
 
 async function postData(url = '', data = {}) {
@@ -21,26 +22,26 @@ function Login({navigation}) {
   const [visible, setVisible] = useState('');
   const onDismissSnackBar = () => setVisible('');
 
+  const {login} = useLoginStore();
+
   const onSubmit = async () => {
     if (password && id) {
-      console.log(password, id);
-      // try {
-      //   const res = await postData(
-      //     'https://water-flow-meter.herokuapp.com/api/apk/login',
-      //     {
-      //       id,
-      //       password,
-      //     },
-      //   );
-      //   setVisible(res.message);
-      //   if (res.status == 200) {
-      //     setPassword('');
-      //     setId('');
-      //   }
-      // } catch (error) {
-      //   console.log(error);
-      //   setVisible('Error Occured');
-      // }
+      try {
+        const res = await postData(
+          'https://water-flow-meter.herokuapp.com/api/apk/login',
+          {
+            device: id,
+            pass: password,
+          },
+        );
+        if (res.message === true) {
+          await login(id, password);
+        } else if (res.message) {
+          setVisible('Invalid Id or password');
+        }
+      } catch (error) {
+        setVisible('Error Occured');
+      }
     } else {
       setVisible('Data is not Complete');
     }

@@ -56,8 +56,8 @@ function Register({navigation}) {
             citizenship,
           },
         );
-        setVisible(res.message);
-        if (res.status == 200) {
+        if (res.message) {
+          setVisible(res.message);
           setName('');
           setEmail('');
           setAddress('');
@@ -65,6 +65,7 @@ function Register({navigation}) {
           setPassword('');
           setConfirmPassword('');
           setNumber('');
+          setTimeout(() => navigation.navigate('Register Success'), 3000);
         }
       } catch (error) {
         console.log(error);

@@ -8,15 +8,17 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import {
   Provider as PaperProvider,
   DefaultTheme as PaperDefaultTheme,
+  Button,
 } from 'react-native-paper';
 import merge from 'deepmerge';
+import {observer} from 'mobx-react-lite';
 import {useLoginStore} from './utils/mobx/auth.store';
 
 import Register from './screens/register/register';
 import Loading from './screens/loading/loading';
 import Home from './screens/home/home';
 import Login from './screens/login/login';
-import {observer} from 'mobx-react-lite';
+import RegisterSuccess from './screens/register/requested';
 
 const CombinedDefaultTheme = merge(PaperDefaultTheme, NavigationDefaultTheme);
 
@@ -24,7 +26,7 @@ const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
 export default observer(() => {
-  const {isLoggedIn, loading, checkIfLoggedIn} = useLoginStore();
+  const {isLoggedIn, loading, checkIfLoggedIn, logout} = useLoginStore();
 
   React.useEffect(() => {
     checkIfLoggedIn();
@@ -46,6 +48,11 @@ export default observer(() => {
       return (
         <Stack.Navigator>
           <Stack.Screen
+            name="Register Success"
+            component={RegisterSuccess}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
             name="Login"
             component={Login}
             options={{headerShown: false}}
@@ -60,7 +67,24 @@ export default observer(() => {
     } else {
       return (
         <Drawer.Navigator>
-          <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen
+            name="Home"
+            component={Home}
+            options={{
+              headerStyle: {
+                backgroundColor: '#f4511e',
+              },
+              headerTintColor: '#fff',
+              headerTitleStyle: {
+                fontWeight: 'bold',
+              },
+              headerRight: () => (
+                <Button mode="elevated" color="#fff" onPress={logout}>
+                  Logout
+                </Button>
+              ),
+            }}
+          />
         </Drawer.Navigator>
       );
     }

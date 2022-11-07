@@ -2,11 +2,11 @@ import React from 'react';
 import {runInAction, makeAutoObservable} from 'mobx';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const storeUser = async () => {
+const storeUser = async (device, pass) => {
   try {
     await AsyncStorage.multiSet([
-      ['user', 'abcd'],
-      ['pass', 'password1'],
+      ['device', device],
+      ['pass', pass],
     ]);
   } catch (error) {
     console.log(error);
@@ -15,10 +15,10 @@ const storeUser = async () => {
 
 const getUser = async () => {
   try {
-    const user = await AsyncStorage.multiGet(['user', 'pass']);
+    const user = await AsyncStorage.multiGet(['device', 'pass']);
     if (user)
       return {
-        user: user[0][1],
+        device: user[0][1],
         pass: user[1][1],
       };
     return {};
@@ -26,6 +26,27 @@ const getUser = async () => {
     console.log(error);
   }
 };
+
+const removeUser = async () => {
+  const keys = ['device', 'pass'];
+  try {
+    await AsyncStorage.multiRemove(keys);
+  } catch (e) {
+    console.log(error);
+  }
+  console.log('User Removed');
+};
+
+async function postData(url = '', data = {}) {
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+  return response.json();
+}
 
 class LoginStore {
   isLoggedIn = false;
@@ -36,21 +57,42 @@ class LoginStore {
   }
 
   checkIfLoggedIn = async () => {
-    const {user, pass} = await getUser();
-    if (user && pass) {
+    const {device, pass} = await getUser();
+    if (device && pass) {
+      const res = await postData(
+        'https://water-flow-meter.herokuapp.com/api/apk/login',
+        {
+          device,
+          pass,
+        },
+      );
+      if (res.message === true)
+        runInAction(() => {
+          this.loading = false;
+          this.isLoggedIn = true;
+        });
+    } else {
       runInAction(() => {
         this.loading = false;
       });
     }
   };
 
-  login = async () => {};
+  login = async (device, pass) => {
+    storeUser(device, pass);
+    runInAction(() => {
+      this.isLoggedIn = true;
+    });
+  };
 
-  logout = async () => {};
+  logout = async () => {
+    await removeUser();
+    runInAction(() => {
+      this.isLoggedIn = false;
+    });
+  };
 }
 
-// Instantiate the counter store.
 const loginStore = new LoginStore();
-// Create a React Context with the counter store instance.
 export const LoginStoreContext = React.createContext(loginStore);
 export const useLoginStore = () => React.useContext(LoginStoreContext);
