@@ -13,7 +13,7 @@ const storeUser = async (device, pass) => {
   }
 };
 
-const getUser = async () => {
+export const getUser = async () => {
   try {
     const user = await AsyncStorage.multiGet(['device', 'pass']);
     if (user)

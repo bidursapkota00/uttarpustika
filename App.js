@@ -19,6 +19,7 @@ import Loading from './screens/loading/loading';
 import Home from './screens/home/home';
 import Login from './screens/login/login';
 import RegisterSuccess from './screens/register/requested';
+import Retry from './screens/retry/retry';
 
 const CombinedDefaultTheme = merge(PaperDefaultTheme, NavigationDefaultTheme);
 
@@ -26,11 +27,7 @@ const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
 export default observer(() => {
-  const {isLoggedIn, loading, checkIfLoggedIn, logout} = useLoginStore();
-
-  React.useEffect(() => {
-    checkIfLoggedIn();
-  }, []);
+  const {isLoggedIn, loading, logout} = useLoginStore();
 
   function Screen() {
     if (loading) {
@@ -41,6 +38,11 @@ export default observer(() => {
             component={Loading}
             options={{headerShown: false}}
           />
+          <Stack.Screen
+            name="Retry"
+            component={Retry}
+            options={{headerShown: false}}
+          />
         </Stack.Navigator>
       );
     }
@@ -48,13 +50,13 @@ export default observer(() => {
       return (
         <Stack.Navigator>
           <Stack.Screen
-            name="Register Success"
-            component={RegisterSuccess}
+            name="Login"
+            component={Login}
             options={{headerShown: false}}
           />
           <Stack.Screen
-            name="Login"
-            component={Login}
+            name="Register Success"
+            component={RegisterSuccess}
             options={{headerShown: false}}
           />
           <Stack.Screen
@@ -72,14 +74,14 @@ export default observer(() => {
             component={Home}
             options={{
               headerStyle: {
-                backgroundColor: '#f4511e',
+                backgroundColor: '#1b8bb9',
               },
-              headerTintColor: '#fff',
+              headerTintColor: '#abdbe3',
               headerTitleStyle: {
                 fontWeight: 'bold',
               },
               headerRight: () => (
-                <Button mode="elevated" color="#fff" onPress={logout}>
+                <Button mode="elevated" color="#abdbe3" onPress={logout}>
                   Logout
                 </Button>
               ),
