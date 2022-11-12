@@ -7,27 +7,30 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import LinearGradient from 'react-native-linear-gradient';
 import {LineChart} from 'react-native-chart-kit';
 import {Dimensions} from 'react-native';
+import DatePicker from 'react-native-date-picker';
 import {styles} from './home.css';
 
 const screenWidth = Dimensions.get('window').width;
 
 const chartdata = {
-  labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+  labels: ['', 2, 2, 6, 8, 10, 12],
   datasets: [
     {
-      data: [20, 45, 28, 80, 99, 43],
-      color: (opacity = 1) => `rgba(255,255, 255, ${opacity})`, // optional
+      data: [45, 50, 55, 55, 80, 90, 95],
+      color: (opacity = 1) => `rgba(9, 93, 155, ${opacity})`, // optional
     },
   ],
-  legend: ['Rainy Days'], // optional
+  legend: ['Litre'],
 };
 
 const chartConfig = {
   backgroundGradientFromOpacity: 0,
   backgroundGradientToOpacity: 0,
-  color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-  // barPercentage: 0.5,
-  // useShadowColorFromDataset: false, // optional
+  color: (opacity = 1) => `rgba(9, 93, 155, ${opacity})`,
+  decimalPlaces: 1,
+  propsForLabels: {
+    fontSize: 18,
+  },
 };
 
 async function postData(url = '', data = {}) {
@@ -43,8 +46,14 @@ async function postData(url = '', data = {}) {
 }
 
 const Home = ({navigation}) => {
+  let now = new Date();
   const [data, setData] = useState({});
-  const [chartHeight, setChartHeight] = useState(300);
+  const [chartHeight, setChartHeight] = useState(0);
+  const [date, setDate] = useState(
+    new Date(now.setHours(now.getHours(), 0, 0, 0)),
+  );
+
+  console.log(date);
 
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -85,13 +94,26 @@ const Home = ({navigation}) => {
         </View>
       </LinearGradient>
 
+      <DatePicker
+        date={date}
+        onDateChange={d => setDate(new Date(d.setHours(d.getHours(), 0, 0, 0)))}
+        maximumDate={new Date()}
+        androidVariant="nativeAndroid"
+        mode="datetime"
+        textColor="#095d9b"
+        style={{width: screenWidth}}
+        minuteInterval={30}
+      />
+
       <View style={styles.chart__cont} onLayout={onLayout}>
-        <LineChart
-          data={chartdata}
-          width={screenWidth}
-          height={Math.floor(chartHeight)}
-          chartConfig={chartConfig}
-        />
+        {chartHeight ? (
+          <LineChart
+            data={chartdata}
+            width={screenWidth}
+            height={Math.floor(chartHeight)}
+            chartConfig={chartConfig}
+          />
+        ) : null}
       </View>
     </View>
   );

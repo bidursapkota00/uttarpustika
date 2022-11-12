@@ -42,5 +42,6 @@ export const styles = StyleSheet.create({
   },
   chart__cont: {
     flex: 1,
+    marginBottom: 25,
   },
 });
