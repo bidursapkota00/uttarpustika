@@ -3,6 +3,7 @@ import {Button, TextInput, Text, Snackbar, withTheme} from 'react-native-paper';
 import {View, KeyboardAvoidingView, ScrollView} from 'react-native';
 import {useLoginStore} from '../../utils/mobx/auth.store';
 import {styles} from './login.css';
+import {base_url} from '../../utils/const';
 
 async function postData(url = '', data = {}) {
   const response = await fetch(url, {
@@ -27,13 +28,10 @@ function Login({navigation}) {
   const onSubmit = async () => {
     if (password && id) {
       try {
-        const res = await postData(
-          'https://water-flow-meter.herokuapp.com/api/apk/login',
-          {
-            device: id,
-            pass: password,
-          },
-        );
+        const res = await postData(base_url + '/api/apk/login', {
+          device: id,
+          pass: password,
+        });
         if (res.message === true) {
           await login(id, password);
         } else if (res.message) {

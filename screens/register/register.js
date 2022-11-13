@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {Button, TextInput, Text, Snackbar, withTheme} from 'react-native-paper';
 import {View, KeyboardAvoidingView, ScrollView} from 'react-native';
 import {styles} from './register.css';
+import {base_url} from '../../utils/const';
 
 async function postData(url = '', data = {}) {
   const response = await fetch(url, {
@@ -45,17 +46,14 @@ function Register({navigation}) {
         return;
       }
       try {
-        const res = await postData(
-          'https://water-flow-meter.herokuapp.com/api/register',
-          {
-            name,
-            address,
-            email,
-            password,
-            number,
-            citizenship,
-          },
-        );
+        const res = await postData(base_url + '/api/register', {
+          name,
+          address,
+          email,
+          password,
+          number,
+          citizenship,
+        });
         if (res.message) {
           setVisible(res.message);
           setName('');

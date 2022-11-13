@@ -12,17 +12,6 @@ import {styles} from './home.css';
 
 const screenWidth = Dimensions.get('window').width;
 
-const chartdata = {
-  labels: ['', 2, 2, 6, 8, 10, 12],
-  datasets: [
-    {
-      data: [45, 50, 55, 55, 80, 90, 95],
-      color: (opacity = 1) => `rgba(9, 93, 155, ${opacity})`, // optional
-    },
-  ],
-  legend: ['Litre'],
-};
-
 const chartConfig = {
   backgroundGradientFromOpacity: 0,
   backgroundGradientToOpacity: 0,
@@ -46,25 +35,51 @@ async function postData(url = '', data = {}) {
 }
 
 const Home = ({navigation}) => {
-  let now = new Date();
-  const [data, setData] = useState({});
+  const [userData, setUserData] = useState({});
+  const [litreData, setLitreData] = useState({});
   const [chartHeight, setChartHeight] = useState(0);
-  const [date, setDate] = useState(
-    new Date(now.setHours(now.getHours(), 0, 0, 0)),
-  );
+  const [date, setDate] = useState(new Date());
 
-  console.log(date);
+  const chartdata = {
+    labels: litreData?.labels?.length
+      ? litreData.labels.map(l => new Date(l).getMinutes())
+      : [''],
+    datasets: [
+      {
+        data: litreData?.data?.length ? litreData.data : [0],
+        color: (opacity = 1) => `rgba(9, 93, 155, ${opacity})`, // optional
+      },
+    ],
+    legend: ['Litre'],
+  };
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const {device} = await getUser();
-  //     const res = await postData(base_url + '/api/apk/home', {
-  //       device,
-  //     });
-  //     setData(res.message);
-  //   };
-  //   fetchData().catch(error => console.log(error));
-  // }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      const {device} = await getUser();
+      const res = await postData(base_url + '/api/apk/home', {
+        device,
+      });
+      setUserData(res?.message);
+    };
+    fetchData().catch(error => console.log(error));
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const {device} = await getUser();
+      let date1 = new Date(date);
+      date1 = new Date(date1.setHours(date1.getHours(), 0, 0, 0));
+      let date2 = new Date(date1);
+      date2 = new Date(date2.setHours(date2.getHours() + 1));
+      const res = await postData(base_url + '/api/apk/getdata', {
+        device,
+        date1,
+        date2,
+      });
+      setLitreData(res?.message);
+    };
+    fetchData().catch(error => console.log(error));
+  }, [date]);
 
   const onLayout = event => {
     const {height} = event.nativeEvent.layout;
@@ -77,26 +92,30 @@ const Home = ({navigation}) => {
         <View style={styles.left}>
           <View style={styles.row}>
             <Icon name="account-circle" size={30} color="#9ce1e8" />
-            <Text style={styles.text}>Bidur Sapkota</Text>
+            <Text style={styles.textUser}>{userData?.user?.name}</Text>
           </View>
           <View style={styles.row}>
             <Icon name="house" size={30} color="#9ce1e8" />
-            <Text style={styles.text}>Nakhipot, Lalitpur</Text>
+            <Text style={styles.textUser}>{userData?.user?.address}</Text>
           </View>
           <View style={styles.row}>
             <Icon name="speed" size={30} color="#9ce1e8" />
-            <Text style={styles.text}>78 units</Text>
+            <Text style={styles.text}>
+              {(userData?.total_litre / 1000)?.toFixed(3)} units
+            </Text>
           </View>
         </View>
         <View style={styles.right}>
           <Icon name="opacity" size={80} color="#9ce1e8" />
-          <Text style={[styles.ltr]}>10089 ltr.</Text>
+          <Text style={[styles.ltr]}>
+            {userData?.total_litre?.toFixed(1)} ltr.
+          </Text>
         </View>
       </LinearGradient>
 
       <DatePicker
         date={date}
-        onDateChange={d => setDate(new Date(d.setHours(d.getHours(), 0, 0, 0)))}
+        onDateChange={setDate}
         maximumDate={new Date()}
         androidVariant="nativeAndroid"
         mode="datetime"

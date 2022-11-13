@@ -1,5 +1,12 @@
 import {StyleSheet} from 'react-native';
 
+const text = {
+  fontSize: 16,
+  marginLeft: 10,
+  flex: 1,
+  color: '#9ce1e8',
+};
+
 export const styles = StyleSheet.create({
   home: {
     flex: 1,
@@ -30,11 +37,10 @@ export const styles = StyleSheet.create({
     marginBottom: 20,
     alignItems: 'center',
   },
-  text: {
-    fontSize: 16,
-    marginLeft: 10,
-    flex: 1,
-    color: '#9ce1e8',
+  text,
+  textUser: {
+    textTransform: 'capitalize',
+    ...text,
   },
   ltr: {
     fontSize: 20,

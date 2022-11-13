@@ -1,6 +1,7 @@
 import React from 'react';
 import {runInAction, makeAutoObservable} from 'mobx';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {base_url} from '../const';
 
 const storeUser = async (device, pass) => {
   try {
@@ -59,13 +60,10 @@ class LoginStore {
   checkIfLoggedIn = async () => {
     const {device, pass} = await getUser();
     if (device && pass) {
-      const res = await postData(
-        'https://water-flow-meter.herokuapp.com/api/apk/login',
-        {
-          device,
-          pass,
-        },
-      );
+      const res = await postData(base_url + '/api/apk/login', {
+        device,
+        pass,
+      });
       if (res.message === true)
         runInAction(() => {
           this.loading = false;
