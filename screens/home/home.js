@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
-import {Text} from 'react-native-paper';
+import {Text, Snackbar} from 'react-native-paper';
 import {getUser} from '../../utils/mobx/auth.store';
 import {base_url} from '../../utils/const';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import LinearGradient from 'react-native-linear-gradient';
 import {LineChart} from 'react-native-chart-kit';
 import {Dimensions} from 'react-native';
+import {useIsFocused} from '@react-navigation/native';
 import DatePicker from 'react-native-date-picker';
 import {styles} from './home.css';
 
@@ -35,10 +36,14 @@ async function postData(url = '', data = {}) {
 }
 
 const Home = ({navigation}) => {
+  const isFocused = useIsFocused();
   const [userData, setUserData] = useState({});
   const [litreData, setLitreData] = useState({});
   const [chartHeight, setChartHeight] = useState(0);
   const [date, setDate] = useState(new Date());
+
+  const [visible, setVisible] = useState('');
+  const onDismissSnackBar = () => setVisible('');
 
   const chartdata = {
     labels: litreData?.labels?.length
@@ -46,11 +51,15 @@ const Home = ({navigation}) => {
       : [''],
     datasets: [
       {
-        data: litreData?.data?.length ? litreData.data : [0],
+        data: litreData?.data?.length
+          ? userData?.total_litre > 999
+            ? litreData.data.map(d => d / 1000)
+            : litreData.data
+          : [0],
         color: (opacity = 1) => `rgba(9, 93, 155, ${opacity})`, // optional
       },
     ],
-    legend: ['Litre'],
+    legend: userData?.total_litre > 999 ? ['Unit'] : ['Litre'],
   };
 
   useEffect(() => {
@@ -62,7 +71,7 @@ const Home = ({navigation}) => {
       setUserData(res?.message);
     };
     fetchData().catch(error => console.log(error));
-  }, []);
+  }, [isFocused]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -78,8 +87,8 @@ const Home = ({navigation}) => {
       });
       setLitreData(res?.message);
     };
-    fetchData().catch(error => console.log(error));
-  }, [date]);
+    fetchData().catch(error => setVisible(error.toString()));
+  }, [date, isFocused]);
 
   const onLayout = event => {
     const {height} = event.nativeEvent.layout;
@@ -133,6 +142,21 @@ const Home = ({navigation}) => {
             chartConfig={chartConfig}
           />
         ) : null}
+      </View>
+
+      <View style={styles.snackbar}>
+        <Snackbar
+          duration={3000}
+          visible={visible ? true : false}
+          onDismiss={onDismissSnackBar}
+          action={{
+            label: 'Hide',
+            onPress: () => {
+              setVisible('');
+            },
+          }}>
+          {visible}
+        </Snackbar>
       </View>
     </View>
   );

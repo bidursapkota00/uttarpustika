@@ -1,6 +1,11 @@
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
+  form: {
+    flex: 1,
+    paddingBottom: 50,
+    backgroundColor: '#e1e1e1',
+  },
   container: {
     padding: 25,
     paddingTop: 50,

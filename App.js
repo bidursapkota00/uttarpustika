@@ -20,6 +20,7 @@ import Home from './screens/home/home';
 import Login from './screens/login/login';
 import RegisterSuccess from './screens/register/requested';
 import Retry from './screens/retry/retry';
+import Pay from './screens/payment/pay';
 
 const CombinedDefaultTheme = merge(PaperDefaultTheme, NavigationDefaultTheme);
 
@@ -28,6 +29,20 @@ const Drawer = createDrawerNavigator();
 
 export default observer(() => {
   const {isLoggedIn, loading, logout} = useLoginStore();
+  const options = {
+    headerStyle: {
+      backgroundColor: '#1b8bb9',
+    },
+    headerTintColor: '#abdbe3',
+    headerTitleStyle: {
+      fontWeight: 'bold',
+    },
+    headerRight: () => (
+      <Button mode="elevated" color="#abdbe3" onPress={logout}>
+        Logout
+      </Button>
+    ),
+  };
 
   function Screen() {
     if (loading) {
@@ -68,25 +83,9 @@ export default observer(() => {
       );
     } else {
       return (
-        <Drawer.Navigator>
-          <Stack.Screen
-            name="Home"
-            component={Home}
-            options={{
-              headerStyle: {
-                backgroundColor: '#1b8bb9',
-              },
-              headerTintColor: '#abdbe3',
-              headerTitleStyle: {
-                fontWeight: 'bold',
-              },
-              headerRight: () => (
-                <Button mode="elevated" color="#abdbe3" onPress={logout}>
-                  Logout
-                </Button>
-              ),
-            }}
-          />
+        <Drawer.Navigator useLegacyImplementation>
+          <Stack.Screen name="Home" component={Home} options={options} />
+          <Stack.Screen name="Payment" component={Pay} options={options} />
         </Drawer.Navigator>
       );
     }

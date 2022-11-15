@@ -19,6 +19,7 @@ async function postData(url = '', data = {}) {
 function Login({navigation}) {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const [visible, setVisible] = useState('');
   const onDismissSnackBar = () => setVisible('');
@@ -26,6 +27,7 @@ function Login({navigation}) {
   const {login} = useLoginStore();
 
   const onSubmit = async () => {
+    setLoading(true);
     if (password && id) {
       try {
         const res = await postData(base_url + '/api/apk/login', {
@@ -43,10 +45,11 @@ function Login({navigation}) {
     } else {
       setVisible('Data is not Complete');
     }
+    setLoading(false);
   };
 
   return (
-    <KeyboardAvoidingView style={{flex: 1, paddingBottom: 50}}>
+    <KeyboardAvoidingView style={styles.form}>
       <ScrollView>
         <View style={styles.container}>
           <TextInput
@@ -62,7 +65,7 @@ function Login({navigation}) {
             value={password}
             onChangeText={text => setPassword(text)}
           />
-          <Button mode="contained" onPress={onSubmit}>
+          <Button loading={loading} mode="contained" onPress={onSubmit}>
             Login!
           </Button>
           <View style={styles.dont}>

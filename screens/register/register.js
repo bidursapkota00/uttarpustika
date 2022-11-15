@@ -26,8 +26,10 @@ function Register({navigation}) {
 
   const [visible, setVisible] = useState('');
   const onDismissSnackBar = () => setVisible('');
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = async () => {
+    setLoading(true);
     if (
       name &&
       address &&
@@ -72,10 +74,11 @@ function Register({navigation}) {
     } else {
       setVisible('Data is not Complete');
     }
+    setLoading(false);
   };
 
   return (
-    <KeyboardAvoidingView>
+    <KeyboardAvoidingView style={styles.form}>
       <ScrollView>
         <View style={styles.container}>
           <TextInput
@@ -124,7 +127,7 @@ function Register({navigation}) {
             value={citizenship}
             onChangeText={text => setCitizenship(text)}
           />
-          <Button mode="contained" onPress={onSubmit}>
+          <Button loading={loading} mode="contained" onPress={onSubmit}>
             Register
           </Button>
           <View style={styles.already}>
