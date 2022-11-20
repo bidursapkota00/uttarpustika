@@ -19,8 +19,8 @@ import Loading from './screens/loading/loading';
 import Home from './screens/home/home';
 import Login from './screens/login/login';
 import RegisterSuccess from './screens/register/requested';
-import Retry from './screens/retry/retry';
 import Pay from './screens/payment/pay';
+import Pass from './screens/nodemcu/pass';
 
 const CombinedDefaultTheme = merge(PaperDefaultTheme, NavigationDefaultTheme);
 
@@ -53,11 +53,6 @@ export default observer(() => {
             component={Loading}
             options={{headerShown: false}}
           />
-          <Stack.Screen
-            name="Retry"
-            component={Retry}
-            options={{headerShown: false}}
-          />
         </Stack.Navigator>
       );
     }
@@ -86,6 +81,7 @@ export default observer(() => {
         <Drawer.Navigator useLegacyImplementation>
           <Stack.Screen name="Home" component={Home} options={options} />
           <Stack.Screen name="Payment" component={Pay} options={options} />
+          <Stack.Screen name="Nodemcu" component={Pass} options={options} />
         </Drawer.Navigator>
       );
     }

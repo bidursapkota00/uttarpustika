@@ -65,8 +65,12 @@ function Login({navigation}) {
             value={password}
             onChangeText={text => setPassword(text)}
           />
-          <Button loading={loading} mode="contained" onPress={onSubmit}>
-            Login!
+          <Button
+            loading={loading}
+            mode="contained"
+            labelStyle={{fontSize: 25}}
+            onPress={onSubmit}>
+            <Text style={{fontSize: 14, color: '#fff'}}>Login!</Text>
           </Button>
           <View style={styles.dont}>
             <Text variant="labelSmall">Don't have an account?</Text>

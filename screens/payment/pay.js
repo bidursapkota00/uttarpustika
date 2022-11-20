@@ -30,12 +30,13 @@ const Pay = ({navigation}) => {
   const [transaction_pin, setPin] = useState('');
   const [confirmation_code, setOtp] = useState('');
 
-  const amount =
-    userData?.total_litre == 0
+  const amount = userData?.total_litre
+    ? userData?.total_litre == 0
       ? 0
       : userData.total_litre > 20000
       ? (userData.total_litre / 1000) * 8
-      : 80;
+      : 80
+    : 0;
   const [khalti, setKhalti] = useState('initiate');
   const [loading, setLoading] = useState(false);
 
@@ -161,8 +162,12 @@ const Pay = ({navigation}) => {
               onChangeText={text => setPin(text)}
             />
             <View style={{paddingBottom: 15}}>
-              <Button loading={loading} mode="contained" onPress={onSubmit}>
-                Pay
+              <Button
+                loading={loading}
+                mode="contained"
+                onPress={onSubmit}
+                labelStyle={{fontSize: 25}}>
+                <Text style={{fontSize: 14, color: '#fff'}}>Pay</Text>
               </Button>
             </View>
           </>
@@ -175,8 +180,12 @@ const Pay = ({navigation}) => {
               onChangeText={text => setOtp(text)}
             />
             <View style={{paddingBottom: 15}}>
-              <Button loading={loading} mode="contained" onPress={onConfirm}>
-                Confirm
+              <Button
+                labelStyle={{fontSize: 25}}
+                loading={loading}
+                mode="contained"
+                onPress={onConfirm}>
+                <Text style={{fontSize: 14, color: '#fff'}}>Confirm</Text>
               </Button>
             </View>
           </>

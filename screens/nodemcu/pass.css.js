@@ -8,22 +8,18 @@ export const styles = StyleSheet.create({
   },
   container: {
     padding: 25,
-    paddingTop: 50,
-  },
-  title: {
-    textAlign: 'center',
-    marginBottom: 20,
+    paddingTop: '40%',
   },
   input: {
     marginBottom: 15,
-  },
-  cit: {
-    marginBottom: 25,
   },
   snackbar: {
     flex: 1,
     width: '100%',
     alignItems: 'center',
   },
-  already: {flexDirection: 'row', alignItems: 'center', marginTop: 15},
+  btn__pas: {
+    fontSize: 14,
+    color: '#fff',
+  },
 });

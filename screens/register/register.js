@@ -122,13 +122,17 @@ function Register({navigation}) {
             // right={<TextInput.Icon name="eye" />}
           />
           <TextInput
-            style={[styles.input]}
+            style={[styles.input, styles.cit]}
             label="Citizenship Number"
             value={citizenship}
             onChangeText={text => setCitizenship(text)}
           />
-          <Button loading={loading} mode="contained" onPress={onSubmit}>
-            Register
+          <Button
+            loading={loading}
+            mode="contained"
+            labelStyle={{fontSize: 25}}
+            onPress={onSubmit}>
+            <Text style={{fontSize: 14, color: '#fff'}}>Register</Text>
           </Button>
           <View style={styles.already}>
             <Text variant="labelMedium">Already have an account?</Text>

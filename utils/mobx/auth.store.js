@@ -1,7 +1,6 @@
 import React from 'react';
 import {runInAction, makeAutoObservable} from 'mobx';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {base_url} from '../const';
 
 const storeUser = async (device, pass) => {
   try {
@@ -38,17 +37,6 @@ const removeUser = async () => {
   console.log('User Removed');
 };
 
-async function postData(url = '', data = {}) {
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  });
-  return response.json();
-}
-
 class LoginStore {
   isLoggedIn = false;
   loading = true;
@@ -60,19 +48,22 @@ class LoginStore {
   checkIfLoggedIn = async () => {
     const {device, pass} = await getUser();
     if (device && pass) {
-      const res = await postData(base_url + '/api/apk/login', {
-        device,
-        pass,
-      });
-      if (res.message === true)
-        runInAction(() => {
-          this.loading = false;
-          this.isLoggedIn = true;
-        });
+      setTimeout(
+        () =>
+          runInAction(() => {
+            this.loading = false;
+            this.isLoggedIn = true;
+          }),
+        1000,
+      );
     } else {
-      runInAction(() => {
-        this.loading = false;
-      });
+      setTimeout(
+        () =>
+          runInAction(() => {
+            this.loading = false;
+          }),
+        1000,
+      );
     }
   };
 
