@@ -37,8 +37,8 @@ async function postData(url = '', data = {}) {
 
 const Home = ({navigation}) => {
   const isFocused = useIsFocused();
-  const [userData, setUserData] = useState({});
-  const [litreData, setLitreData] = useState({});
+  const [userData, setUserData] = useState({total_litre: 0});
+  const [litreData, setLitreData] = useState({labels: [], data: []});
   const [chartHeight, setChartHeight] = useState(0);
   const [date, setDate] = useState(new Date());
 
@@ -85,7 +85,7 @@ const Home = ({navigation}) => {
         date1,
         date2,
       });
-      setLitreData(res?.message);
+      if (res.message !== 'No data Found') setLitreData(res.message);
     };
     fetchData().catch(error => setVisible(error.toString()));
   }, [date, isFocused]);

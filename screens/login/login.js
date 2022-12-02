@@ -38,14 +38,15 @@ function Login({navigation}) {
           await login(id, password);
         } else if (res.message) {
           setVisible('Invalid Id or password');
+          setLoading(false);
         }
       } catch (error) {
         setVisible('Error Occured');
+        setLoading(false);
       }
     } else {
       setVisible('Data is not Complete');
     }
-    setLoading(false);
   };
 
   return (

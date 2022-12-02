@@ -48,7 +48,7 @@ function Register({navigation}) {
       }
       setLoading(true);
       try {
-        const res = await postData(base_url + '/api/register', {
+        await postData(base_url + '/api/register', {
           name,
           address,
           email,
@@ -56,25 +56,14 @@ function Register({navigation}) {
           number,
           citizenship,
         });
-        if (res.message) {
-          setVisible(res.message);
-          setName('');
-          setEmail('');
-          setAddress('');
-          setCitizenship('');
-          setPassword('');
-          setConfirmPassword('');
-          setNumber('');
-          setTimeout(() => navigation.navigate('Register Success'), 3000);
-        }
+        navigation.navigate('Register Success');
       } catch (error) {
-        console.log(error);
+        setLoading(false);
         setVisible('Error Occured');
       }
     } else {
       setVisible('Data is not Complete');
     }
-    setLoading(false);
   };
 
   return (
