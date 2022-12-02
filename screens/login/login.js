@@ -27,8 +27,8 @@ function Login({navigation}) {
   const {login} = useLoginStore();
 
   const onSubmit = async () => {
-    setLoading(true);
     if (password && id) {
+      setLoading(true);
       try {
         const res = await postData(base_url + '/api/apk/login', {
           device: id,

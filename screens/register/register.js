@@ -29,7 +29,6 @@ function Register({navigation}) {
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async () => {
-    setLoading(true);
     if (
       name &&
       address &&
@@ -47,6 +46,7 @@ function Register({navigation}) {
         setVisible('Use "-" to seperate citizenship number');
         return;
       }
+      setLoading(true);
       try {
         const res = await postData(base_url + '/api/register', {
           name,
