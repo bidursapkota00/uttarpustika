@@ -23,12 +23,37 @@ function Register({navigation}) {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [citizenship, setCitizenship] = useState('');
+  const [otp, setOtp] = useState('');
+  const [showOtp, setShowOtp] = useState(false);
 
   const [visible, setVisible] = useState('');
   const onDismissSnackBar = () => setVisible('');
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async () => {
+    if (otp) {
+      setLoading(true);
+      try {
+        await postData(base_url + '/api/register', {
+          name,
+          address,
+          email,
+          password,
+          number,
+          citizenship,
+          otp,
+        });
+        navigation.navigate('Register Success');
+      } catch (error) {
+        setLoading(false);
+        setVisible('Error Occured');
+      }
+    } else {
+      setVisible('Data is not Complete');
+    }
+  };
+
+  const onVerify = async () => {
     if (
       name &&
       address &&
@@ -48,73 +73,43 @@ function Register({navigation}) {
       }
       setLoading(true);
       try {
-        await postData(base_url + '/api/register', {
+        await postData(base_url + '/api/verifyemail', {
           name,
-          address,
           email,
-          password,
-          number,
-          citizenship,
         });
-        navigation.navigate('Register Success');
+        res.status == 200
+          ? setShowOtp(true)
+          : setVisible('Sending OTP Failed!, Please check your email!');
       } catch (error) {
-        setLoading(false);
-        setVisible('Error Occured');
+        setVisible('Sending OTP Failed!, Please check your email!');
       }
+      setLoading(false);
     } else {
       setVisible('Data is not Complete');
     }
   };
 
+  const login = (
+    <View style={styles.already}>
+      <Text variant="labelMedium">Already have an account?</Text>
+      <Button
+        contentStyle={{justifyContent: 'flex-start', padding: 0}}
+        uppercase={false}
+        onPress={() => navigation.navigate('Login')}>
+        Login
+      </Button>
+    </View>
+  );
+
   return (
     <KeyboardAvoidingView style={styles.form}>
-      <ScrollView>
+      {showOtp ? (
         <View style={styles.container}>
           <TextInput
             style={[styles.input]}
-            label="Full Name"
-            value={name}
-            onChangeText={text => setName(text)}
-          />
-          <TextInput
-            style={[styles.input]}
-            label="Address"
-            value={address}
-            onChangeText={text => setAddress(text)}
-          />
-          <TextInput
-            style={[styles.input]}
-            label="Email"
-            value={email}
-            onChangeText={text => setEmail(text)}
-          />
-          <TextInput
-            style={[styles.input]}
-            label="Phone Number"
-            value={number}
-            onChangeText={text => setNumber(text)}
-          />
-          <TextInput
-            style={styles.input}
-            label="Password"
-            secureTextEntry
-            value={password}
-            onChangeText={text => setPassword(text)}
-            // right={<TextInput.Icon name="eye" />}
-          />
-          <TextInput
-            style={styles.input}
-            label="Confirm Password"
-            secureTextEntry
-            value={confirmPassword}
-            onChangeText={text => setConfirmPassword(text)}
-            // right={<TextInput.Icon name="eye" />}
-          />
-          <TextInput
-            style={[styles.input, styles.cit]}
-            label="Citizenship Number"
-            value={citizenship}
-            onChangeText={text => setCitizenship(text)}
+            label="OTP"
+            value={otp}
+            onChangeText={text => setOtp(text)}
           />
           <Button
             loading={loading}
@@ -123,17 +118,68 @@ function Register({navigation}) {
             onPress={onSubmit}>
             <Text style={{fontSize: 14, color: '#fff'}}>Register</Text>
           </Button>
-          <View style={styles.already}>
-            <Text variant="labelMedium">Already have an account?</Text>
-            <Button
-              contentStyle={{justifyContent: 'flex-start', padding: 0}}
-              uppercase={false}
-              onPress={() => navigation.navigate('Login')}>
-              Login
-            </Button>
-          </View>
+          {login}
         </View>
-      </ScrollView>
+      ) : (
+        <ScrollView>
+          <View style={styles.container}>
+            <TextInput
+              style={[styles.input]}
+              label="Full Name"
+              value={name}
+              onChangeText={text => setName(text)}
+            />
+            <TextInput
+              style={[styles.input]}
+              label="Address"
+              value={address}
+              onChangeText={text => setAddress(text)}
+            />
+            <TextInput
+              style={[styles.input]}
+              label="Email"
+              value={email}
+              onChangeText={text => setEmail(text)}
+            />
+            <TextInput
+              style={[styles.input]}
+              label="Phone Number"
+              value={number}
+              onChangeText={text => setNumber(text)}
+            />
+            <TextInput
+              style={styles.input}
+              label="Password"
+              secureTextEntry
+              value={password}
+              onChangeText={text => setPassword(text)}
+              // right={<TextInput.Icon name="eye" />}
+            />
+            <TextInput
+              style={styles.input}
+              label="Confirm Password"
+              secureTextEntry
+              value={confirmPassword}
+              onChangeText={text => setConfirmPassword(text)}
+              // right={<TextInput.Icon name="eye" />}
+            />
+            <TextInput
+              style={[styles.input, styles.cit]}
+              label="Citizenship Number"
+              value={citizenship}
+              onChangeText={text => setCitizenship(text)}
+            />
+            <Button
+              loading={loading}
+              mode="contained"
+              labelStyle={{fontSize: 25}}
+              onPress={onVerify}>
+              <Text style={{fontSize: 14, color: '#fff'}}>Register</Text>
+            </Button>
+            {login}
+          </View>
+        </ScrollView>
+      )}
 
       <View style={styles.snackbar}>
         <Snackbar
