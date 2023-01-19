@@ -73,7 +73,7 @@ function Register({navigation}) {
       }
       setLoading(true);
       try {
-        await postData(base_url + '/api/verifyemail', {
+        const res = await postData(base_url + '/api/verifyemail', {
           name,
           email,
         });
