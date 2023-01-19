@@ -131,6 +131,7 @@ const Home = ({navigation}) => {
         textColor="#095d9b"
         style={{width: screenWidth}}
         minuteInterval={30}
+        is24hourSource="locale"
       />
 
       <View style={styles.chart__cont} onLayout={onLayout}>

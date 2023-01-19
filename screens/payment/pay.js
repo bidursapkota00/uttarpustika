@@ -167,7 +167,7 @@ const Pay = ({navigation}) => {
                 mode="contained"
                 onPress={onSubmit}
                 labelStyle={{fontSize: 25}}>
-                <Text style={{fontSize: 14, color: '#fff'}}>Pay</Text>
+                <Text style={{fontSize: 14, color: '#fff'}}>Khalti Pay</Text>
               </Button>
             </View>
           </>
