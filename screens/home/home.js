@@ -85,7 +85,9 @@ const Home = ({navigation}) => {
         date1,
         date2,
       });
-      if (res.message !== 'No data Found') setLitreData(res.message);
+      res.message !== 'No data Found'
+        ? setLitreData(res.message)
+        : setLitreData({labels: [], data: []});
     };
     fetchData().catch(error => setVisible(error.toString()));
   }, [date, isFocused]);

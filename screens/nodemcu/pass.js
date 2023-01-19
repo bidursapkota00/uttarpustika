@@ -35,6 +35,8 @@ function Pass() {
           console.log(result);
           setVisible('Password Changed Successfully');
           setLoading(false);
+          setSsid('');
+          setPassword('');
         })
         .catch(error => {
           console.log('error', error);
