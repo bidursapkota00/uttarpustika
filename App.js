@@ -21,6 +21,7 @@ import Login from './screens/login/login';
 import RegisterSuccess from './screens/register/requested';
 import Pay from './screens/payment/pay';
 import Pass from './screens/nodemcu/pass';
+import ChangePass from './screens/change_pass/change';
 
 const CombinedDefaultTheme = merge(PaperDefaultTheme, NavigationDefaultTheme);
 
@@ -82,6 +83,11 @@ export default observer(() => {
           <Stack.Screen name="Home" component={Home} options={options} />
           <Stack.Screen name="Payment" component={Pay} options={options} />
           <Stack.Screen name="Nodemcu" component={Pass} options={options} />
+          <Stack.Screen
+            name="Change Password"
+            component={ChangePass}
+            options={options}
+          />
         </Drawer.Navigator>
       );
     }
