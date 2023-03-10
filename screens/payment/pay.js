@@ -55,8 +55,17 @@ const Pay = ({navigation}) => {
             public_key: KHALTI_PUBLIC_KEY,
           },
         );
-        if (res.token) setKhalti(res.token);
-        else setVisible('Error Occured');
+        if (res.token) {
+          const {device} = await getUser();
+          const resp = await postData(base_url + '/api/khalti/initiate', {
+            device,
+            status: 'Initialized',
+            token: res.token,
+            amount,
+          });
+          if (resp._id) setKhalti(res.token);
+          else setVisible('Error Occured');
+        } else setVisible('Error Occured');
       } catch (error) {
         setVisible('Error Occured');
       }
@@ -81,10 +90,24 @@ const Pay = ({navigation}) => {
         );
         if (res.token) {
           const {device} = await getUser();
-          const res = await postData(base_url + '/api/khalti/verify', {
-            device,
-          });
+          const [resp, res] = await Promise.all([
+            postData(base_url + '/api/khalti/initiate', {
+              device,
+              status: 'Confirmed',
+              token: khalti,
+              amount,
+            }),
+            postData(base_url + '/api/khalti/verify', {
+              device,
+            }),
+          ]);
           if (res.message) {
+            await postData(base_url + '/api/khalti/initiate', {
+              device,
+              status: 'Verified',
+              token: khalti,
+              amount,
+            });
             setVisible('Payment Success');
             setMobile('');
             setPin('');
