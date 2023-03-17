@@ -22,6 +22,7 @@ import RegisterSuccess from './screens/register/requested';
 import Pay from './screens/payment/pay';
 import Pass from './screens/nodemcu/pass';
 import ChangePass from './screens/change_pass/change';
+import Complain from './screens/complain/complain';
 
 const CombinedDefaultTheme = merge(PaperDefaultTheme, NavigationDefaultTheme);
 
@@ -86,6 +87,11 @@ export default observer(() => {
           <Stack.Screen
             name="Change Password"
             component={ChangePass}
+            options={options}
+          />
+          <Stack.Screen
+            name="Complain"
+            component={Complain}
             options={options}
           />
         </Drawer.Navigator>
