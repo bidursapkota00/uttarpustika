@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {View, KeyboardAvoidingView, ScrollView} from 'react-native';
-import {Text, TextInput, Snackbar, Button} from 'react-native-paper';
+import {Text, TextInput, Snackbar, Button, Switch} from 'react-native-paper';
 import {getUser} from '../../utils/mobx/auth.store';
 import {base_url} from '../../utils/const';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -24,6 +24,8 @@ async function postData(url = '', data = {}) {
 const Pay = ({navigation}) => {
   const isFocused = useIsFocused();
   const [userData, setUserData] = useState({});
+  const [day30, setDay30] = useState(50);
+  const [allowBefore30, setAllowBefore30] = useState(false);
   const [visible, setVisible] = useState('');
   const onDismissSnackBar = () => setVisible('');
   const [mobile, setMobile] = useState('');
@@ -37,37 +39,42 @@ const Pay = ({navigation}) => {
       ? (userData.total_litre / 1000) * 8
       : 80
     : 0;
+  const fine = day30 > 45 ? (day30 - 30) * 2 : 0;
   const [khalti, setKhalti] = useState('initiate');
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async () => {
     setLoading(true);
     if (mobile && transaction_pin) {
-      try {
-        const res = await postData(
-          'https://khalti.com/api/v2/payment/initiate/',
-          {
-            mobile,
-            transaction_pin,
-            amount: parseInt(amount * 100),
-            product_identity: 'water',
-            product_name: 'water',
-            public_key: KHALTI_PUBLIC_KEY,
-          },
-        );
-        if (res.token) {
+      if (day30 > 30 || allowBefore30) {
+        try {
           const {device} = await getUser();
-          const resp = await postData(base_url + '/api/khalti/initiate', {
-            device,
-            status: 'Initialized',
-            token: res.token,
-            amount,
-          });
-          if (resp._id) setKhalti(res.token);
-          else setVisible('Error Occured');
-        } else setVisible('Error Occured');
-      } catch (error) {
-        setVisible('Error Occured');
+          const res = await postData(
+            'https://khalti.com/api/v2/payment/initiate/',
+            {
+              mobile,
+              transaction_pin,
+              amount: parseInt((amount + fine) * 100),
+              product_identity: 'water',
+              product_name: 'water',
+              public_key: KHALTI_PUBLIC_KEY,
+            },
+          );
+          if (res.token) {
+            const resp = await postData(base_url + '/api/khalti/initiate', {
+              device,
+              status: 'Initialized',
+              token: res.token,
+              amount: (amount + fine).toFixed(2),
+            });
+            if (resp._id) setKhalti(res.token);
+            else setVisible('Error Occured');
+          } else setVisible('Error Occured');
+        } catch (error) {
+          setVisible('Error Occured');
+        }
+      } else {
+        setVisible('Last payment has not exceeded 30 days');
       }
     } else {
       setVisible('Data is not Complete');
@@ -95,7 +102,7 @@ const Pay = ({navigation}) => {
               device,
               status: 'Confirmed',
               token: khalti,
-              amount,
+              amount: (amount + fine).toFixed(2),
             }),
             postData(base_url + '/api/khalti/verify', {
               device,
@@ -106,7 +113,7 @@ const Pay = ({navigation}) => {
               device,
               status: 'Verified',
               token: khalti,
-              amount,
+              amount: (amount + fine).toFixed(2),
             });
             setVisible('Payment Success');
             setMobile('');
@@ -129,9 +136,21 @@ const Pay = ({navigation}) => {
   useEffect(() => {
     const fetchData = async () => {
       const {device} = await getUser();
-      const res = await postData(base_url + '/api/apk/home', {
-        device,
-      });
+      const [res, date] = await Promise.all([
+        postData(base_url + '/api/apk/home', {
+          device,
+        }),
+        postData(base_url + '/api/apk/last-pay-time', {
+          device,
+        }),
+      ]);
+      const curDate = new Date().getTime();
+      const givenDate = new Date(date.createdAt).getTime();
+      const differenceInMilliseconds = curDate - givenDate;
+      const differenceInDays = Math.ceil(
+        differenceInMilliseconds / (1000 * 60 * 60 * 24),
+      );
+      setDay30(differenceInDays);
       setUserData(res?.message);
     };
     fetchData().catch(error => setVisible(error.toString()));
@@ -168,9 +187,17 @@ const Pay = ({navigation}) => {
           Due: Rs.
           {amount.toFixed(2)}
         </Text>
+        <Text style={styles.fine}>
+          Fine: Rs.
+          {fine}
+        </Text>
 
         {khalti === 'initiate' ? (
           <>
+            <Switch
+              value={allowBefore30}
+              onValueChange={() => setAllowBefore30(!allowBefore30)}
+            />
             <TextInput
               style={[styles.input]}
               label="Mobile"
